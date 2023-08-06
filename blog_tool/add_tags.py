@@ -1,22 +1,8 @@
-import glob
-import os
 from blog_tool.tags import Tags
-from get_all_files import get_all_files
-
-MD_FILES = get_all_files()
-ALL_TAGS = Tags.all_tags(md_files=MD_FILES)
 
 
-def run():
-    # ~/git/blog/contentにあるマークダウンファイルを、再帰的にすべて取得する
-
-    # add_tags(md_file="/Users/a_kobori/git/blog-tool/test.md")
-    remove_tag(md_file="/Users/a_kobori/git/blog-tool/test.md",
-               remove_tag="Notion")
-
-
-def add_tags(md_file: str) -> None:
-    tag_values = ALL_TAGS.values.copy()
+def handle_add_tags(md_file: str, all_tags: Tags) -> None:
+    tag_values = all_tags.values.copy()
     tags_line_idx = 0
     content_tags = Tags(values=[])
     with open(md_file, 'r') as f:
@@ -48,14 +34,7 @@ def add_tags(md_file: str) -> None:
                         content_tags = content_tags.add_tag(tag)
         # tags:の行を更新する
         lines[tags_line_idx] = f"tags: {content_tags.to_blog_string()}\n"
-        print("".join(lines))
 
-
-def get_all_file() -> list[str]:
-    # ~/git/blogにあるマークダウンファイルを、再帰的にすべて取得する
-    return glob.glob(os.path.join(os.path.expanduser(
-        '~/git/blog/content'), '**/*.md'), recursive=True)
-
-
-if __name__ == '__main__':
-    run()
+        # ファイルを更新
+        with open(md_file, 'w') as f:
+            f.writelines(lines)
