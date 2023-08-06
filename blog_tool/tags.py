@@ -15,8 +15,13 @@ class Tags:
     def add_tag(self, tag: str) -> 'Tags':
         return Tags(values=self.values + [tag])
 
+    def remove_tag(self, tag: str) -> 'Tags':
+        return Tags(values=[value for value in self.values if value != tag])
+
     def to_blog_string(self) -> str:
-        return f"tags: [{', '.join(self.values)}]"
+        # ダブルクオーテーションで囲む
+        values = [f"\"{value}\"" for value in self.values]
+        return f"[{', '.join(values)}]"
 
     @ staticmethod
     def all_tags(md_files: list[str]) -> 'Tags':

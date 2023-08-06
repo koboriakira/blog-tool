@@ -8,8 +8,33 @@ def run():
     md_files = get_all_file()
     tags = Tags.all_tags(md_files=md_files)
 
-    add_tags(md_file="/Users/a_kobori/git/blog-tool/test.md",
-             tags=tags)
+    # add_tags(md_file="/Users/a_kobori/git/blog-tool/test.md",
+    #          tags=tags)
+    remove_tag(md_file="/Users/a_kobori/git/blog-tool/test.md",
+               remove_tag="Notion")
+
+
+def remove_tag(md_file: str, remove_tag: str) -> None:
+    with open(md_file, 'r') as f:
+        lines = f.readlines()
+        for idx, line in enumerate(lines):
+            # title: から始まる行は無視
+            if line.startswith("title:"):
+                continue
+            # "tags:"から始まる場合、その行に含まれるタグ名を取得する
+            if line.startswith("tags:"):
+                # タグ(tag)をリンクに変換する
+                content_tags = Tags.from_string(line)
+                content_tags = content_tags.remove_tag(remove_tag)
+                lines[idx] = f"tags: {content_tags.to_blog_string()}\n"
+            if remove_tag in line:
+                # すでにタグ(tag)がリンクになっていないかを判定。
+                # リンクとは[Notion](/tags/Notion)のようなものを指す
+                if f"[{remove_tag}](/tags/{remove_tag})" in line:
+                    # タグ(tag)を通常の文字列に変換する
+                    lines[idx] = lines[idx].replace(
+                        f"[{remove_tag}](/tags/{remove_tag})", remove_tag)
+        print("".join(lines))
 
 
 def add_tags(md_file: str, tags: Tags) -> None:
@@ -19,6 +44,9 @@ def add_tags(md_file: str, tags: Tags) -> None:
     with open(md_file, 'r') as f:
         lines = f.readlines()
         for idx, line in enumerate(lines):
+            # title: から始まる行は無視
+            if line.startswith("title:"):
+                continue
             # "tags:"から始まる場合、その行に含まれるタグ名を取得する
             if line.startswith("tags:"):
                 # idxを覚えておく
@@ -29,9 +57,6 @@ def add_tags(md_file: str, tags: Tags) -> None:
                 tag_values = [
                     tag for tag in tag_values if tag not in content_tags.values]
             for tag in tag_values:
-                # title: から始まる行は無視
-                if line.startswith("title:"):
-                    continue
                 # タグ(tag)が含まれる文章(line)であるかを判定
                 if tag in line:
                     # すでにタグ(tag)がリンクになっていないかを判定。
