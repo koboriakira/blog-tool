@@ -1,15 +1,16 @@
 import glob
 import os
 from blog_tool.tags import Tags
+from get_all_files import get_all_files
+
+MD_FILES = get_all_files()
+ALL_TAGS = Tags.all_tags(md_files=MD_FILES)
 
 
 def run():
     # ~/git/blog/contentにあるマークダウンファイルを、再帰的にすべて取得する
-    md_files = get_all_file()
-    tags = Tags.all_tags(md_files=md_files)
 
-    # add_tags(md_file="/Users/a_kobori/git/blog-tool/test.md",
-    #          tags=tags)
+    # add_tags(md_file="/Users/a_kobori/git/blog-tool/test.md")
     remove_tag(md_file="/Users/a_kobori/git/blog-tool/test.md",
                remove_tag="Notion")
 
@@ -37,8 +38,8 @@ def remove_tag(md_file: str, remove_tag: str) -> None:
         print("".join(lines))
 
 
-def add_tags(md_file: str, tags: Tags) -> None:
-    tag_values = tags.values.copy()
+def add_tags(md_file: str) -> None:
+    tag_values = ALL_TAGS.values.copy()
     tags_line_idx = 0
     content_tags = Tags(values=[])
     with open(md_file, 'r') as f:
