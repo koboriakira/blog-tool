@@ -16,6 +16,8 @@ parser.add_argument("sub_command", help="サブコマンドを指定します。
                     choices=SUB_COMMANDS)
 parser.add_argument("--tag", help="タグ指定が必要なコマンドの場合、必要となります")
 parser.add_argument("--file", help="ファイル指定が必要なコマンドの場合、必要となります")
+parser.add_argument("--all", action='store_true',
+                    help="add_tagsを全ファイルに実行する場合、必要となります")
 
 
 def validate_tag(tag) -> None:
@@ -39,7 +41,11 @@ def execute():
         for md_file in MD_FILES:
             handle_remove_tag(md_file=md_file, remove_tag=args.tag)
     elif args.sub_command == "add_tags":
-        for md_file in MD_FILES:
+        if args.all:
+            for md_file in MD_FILES:
+                handle_add_tags(md_file=md_file, all_tags=ALL_TAGS)
+        else:
+            md_file = get_file(args.file)
             handle_add_tags(md_file=md_file, all_tags=ALL_TAGS)
     elif args.sub_command == "add_tag":
         validate_tag(args.tag)
@@ -56,4 +62,5 @@ if __name__ == "__main__":
     # python -m blog_tool.cli remove_tag --tag プロレス
     # python -m blog_tool.cli add_tag --tag "Roam Research"
     # python -m blog_tool.cli bracket
+    # python -m blog_tool.cli add_tags --all
     execute()
