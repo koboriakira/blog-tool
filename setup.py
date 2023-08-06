@@ -1,3 +1,5 @@
+# python setup.py sdist
+# python -m pip install dist/blog-tool-1.0.tar.gz
 from setuptools import setup, find_packages
 
 setup(

@@ -36,4 +36,6 @@ def execute():
 
 if __name__ == "__main__":
     # python -m blog_tool.cli {sub_command}
+    # ex.
+    # python -m blog_tool.cli remove_tag --tag=プロレス
     execute()

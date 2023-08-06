@@ -12,8 +12,9 @@ def handle_remove_tag(md_file: str, remove_tag: str) -> None:
             if line.startswith("tags:"):
                 # タグ(tag)をリンクに変換する
                 content_tags = Tags.from_string(line)
-                content_tags = content_tags.remove_tag(remove_tag)
-                lines[idx] = f"tags: {content_tags.to_blog_string()}\n"
+                removed_content_tags = content_tags.remove_tag(remove_tag)
+                if not removed_content_tags.equals(content_tags):
+                    lines[idx] = f"tags: {removed_content_tags.to_blog_string()}\n"
             if remove_tag in line:
                 # すでにタグ(tag)がリンクになっていないかを判定。
                 # リンクとは[Notion](/tags/Notion)のようなものを指す

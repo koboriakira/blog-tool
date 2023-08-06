@@ -23,6 +23,9 @@ class Tags:
         values = [f"\"{value}\"" for value in self.values]
         return f"[{', '.join(values)}]"
 
+    def equals(self, tags: 'Tags') -> bool:
+        return sorted(self.values) == sorted(tags.values)
+
     @ staticmethod
     def all_tags(md_files: list[str]) -> 'Tags':
         tags = Tags(values=[])
