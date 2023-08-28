@@ -4,6 +4,11 @@
 
 ## 使い方
 
+```
+python setup.py sdist
+pip install dist/blog-tool-1.0.tar.gz
+```
+
 ### 既存のタグリストにあるものを付与する
 
 ```

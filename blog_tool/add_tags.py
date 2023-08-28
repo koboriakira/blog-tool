@@ -25,10 +25,10 @@ def handle_add_tags(md_file: str, all_tags: Tags) -> None:
                 if tag in line:
                     # すでにタグ(tag)がリンクになっていないかを判定。
                     # リンクとは[Notion](/tags/Notion)のようなものを指す
-                    if not f"[{tag}](/tags/{tag})" in line:
+                    tag_element = _create_tag_element(tag)
+                    if not tag_element in line:
                         # タグ(tag)をリンクに変換する
-                        lines[idx] = lines[idx].replace(
-                            tag, f"[{tag}](/tags/{tag})", 1)
+                        lines[idx] = lines[idx].replace(tag, tag_element, 1)
                         # タグ(tag)を追加したので、リストから削除する
                         tag_values.remove(tag)
                         content_tags = content_tags.add_tag(tag)
@@ -38,3 +38,6 @@ def handle_add_tags(md_file: str, all_tags: Tags) -> None:
         # ファイルを更新
         with open(md_file, 'w') as f:
             f.writelines(lines)
+
+def _create_tag_element(tag: str) -> str:
+    return f"[{tag}](/tags/{tag.replace(' ', '%20')})"
